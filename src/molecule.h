@@ -43,6 +43,13 @@ public:
   Atom addAtom(const Eigen::Vector3d &pos = Eigen::Vector3d::Zero(),
                short atomicNumber = 0);
 
+  /** Add a new atom to the molecule, return a pointer to it.
+   * @param pos Initial position, defaults to 0, 0, 0.
+   * @param atomicNumber Atomic (proton) number, defaults to 0 (dummy atom).
+   * @note The atom belongs to the molecule.
+   */
+  Atom addAtom(const double pos[3] = 0, short atomicNumber = 0);
+
   /** Get a pointer to the specified atom.
    * @param index The index of the atom in the molecule.
    * @return Pointer to the Atom, or 0 if the index is invalid.
@@ -68,11 +75,23 @@ public:
    */
   Eigen::Vector3d atomPos(size_t index) const;
 
+  /** Get the position of the specified atom.
+   * @param index The index of the atom you want the position of.
+   * @param pos Position of the atom, or a Zero vector if the index is invalid
+   */
+  void atomPos(size_t index, double pos[3]) const;
+
   /** Set the position of the specified atom.
    * @param index The index of the atom to set the position of.
    * @param pos The position to set it to.
    */
   void setAtomPos(size_t index, const Eigen::Vector3d& pos);
+
+  /** Set the position of the specified atom.
+   * @param index The index of the atom to set the position of.
+   * @param pos The position to set it to.
+   */
+  void setAtomPos(size_t index, const double pos[3]);
 
   /**
    * Clear all atoms from the molecule.

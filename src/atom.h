@@ -47,10 +47,19 @@ public:
   /** Get the position of the specified atom. */
   Eigen::Vector3d pos() const;
 
+  /** Get the position of the specified atom.
+   */
+  void pos(double apos[3]) const;
+
   /** Set the position of the specified atom.
    * @param pos The position to set it to.
    */
   void setPos(const Eigen::Vector3d& pos);
+
+  /** Set the position of the specified atom.
+   * @param pos The position to set it to.
+   */
+  void setPos(const double pos[3]);
 
 protected:
   friend class Molecule;

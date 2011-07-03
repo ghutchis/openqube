@@ -40,6 +40,18 @@ Atom Molecule::addAtom(const Eigen::Vector3d &pos, short atomicNumber)
   return Atom(this, m_atomicNumbers.size() - 1);
 }
 
+Atom Molecule::addAtom(const double pos[3], short atomicNumber)
+{
+  Eigen::Vector3d epos (0.0, 0.0, 0.0);
+  if (pos != 0)
+    {
+    epos.x() = pos[0];
+    epos.y() = pos[1];
+    epos.z() = pos[2];
+    }
+  return this->addAtom(epos, atomicNumber);
+}
+
 const Atom Molecule::atom(size_t index) const
 {
   // The const_cast is needed to create the temporary. As we are returning
@@ -80,10 +92,23 @@ Vector3d Molecule::atomPos(size_t atomIndex) const
     return Vector3d::Zero();
 }
 
+void Molecule::atomPos(size_t atomIndex, double pos[3]) const
+{
+  const Eigen::Vector3d epos = this->atomPos(atomIndex);
+  pos[0] = epos.x();
+  pos[1] = epos.y();
+  pos[2] = epos.z();
+}
+
 void Molecule::setAtomPos(size_t atomIndex, const Eigen::Vector3d& pos)
 {
   if (atomIndex < m_atomPositions[m_conformer].size())
     m_atomPositions[m_conformer][atomIndex] = pos;
+}
+
+void Molecule::setAtomPos(size_t atomIndex, const double pos[3])
+{
+  this->setAtomPos(atomIndex, Eigen::Vector3d(pos[0], pos[1], pos[2]));
 }
 
 void Molecule::clearAtoms()

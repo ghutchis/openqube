@@ -38,6 +38,38 @@ Cube::~Cube()
   m_lock = 0;
 }
 
+void Cube::min(double pos[3]) const
+{
+  Eigen::Vector3d epos = this->min();
+  pos[0] = epos.x();
+  pos[1] = epos.y();
+  pos[2] = epos.z();
+}
+
+void Cube::max(double pos[3]) const
+{
+  Eigen::Vector3d epos = this->max();
+  pos[0] = epos.x();
+  pos[1] = epos.y();
+  pos[2] = epos.z();
+}
+
+void Cube::spacing(double pos[3]) const
+{
+  Eigen::Vector3d epos = this->spacing();
+  pos[0] = epos.x();
+  pos[1] = epos.y();
+  pos[2] = epos.z();
+}
+
+void Cube::dimensions(int pos[3]) const
+{
+  Eigen::Vector3i epos = this->dimensions();
+  pos[0] = epos.x();
+  pos[1] = epos.y();
+  pos[2] = epos.z();
+}
+
 bool Cube::setLimits(const Vector3d &min, const Vector3d &max,
                      const Vector3i &points)
 {
@@ -53,6 +85,12 @@ bool Cube::setLimits(const Vector3d &min, const Vector3d &max,
   return true;
 }
 
+bool Cube::setLimits(const double min[3], const double max[3],
+                     const int points[3])
+{
+  return this->setLimits(Vector3d(min), Vector3d(max), Vector3i(points));
+}
+
 bool Cube::setLimits(const Vector3d &min, const Vector3d &max,
                      double spacing)
 {
@@ -61,6 +99,12 @@ bool Cube::setLimits(const Vector3d &min, const Vector3d &max,
   delta = delta / spacing;
   points = Vector3i(delta.x(), delta.y(), delta.z());
   return setLimits(min, max, points);
+}
+
+bool Cube::setLimits(const double min[3], const double max[3],
+                     double spacing)
+{
+  return this->setLimits(Vector3d(min), Vector3d(max), spacing);
 }
 
 bool Cube::setLimits(const Vector3d &min, const Vector3i &dim,
@@ -75,6 +119,12 @@ bool Cube::setLimits(const Vector3d &min, const Vector3i &dim,
   m_spacing = Vector3d(spacing, spacing, spacing);
   m_data.resize(m_points.x() * m_points.y() * m_points.z());
   return true;
+}
+
+bool Cube::setLimits(const double min[3], const int dim[3],
+                     double spacing)
+{
+  return this->setLimits(Vector3d(min), Vector3i(dim), spacing);
 }
 
 bool Cube::setLimits(const Cube &cube)
@@ -149,6 +199,11 @@ unsigned int Cube::closestIndex(const Vector3d &pos) const
   return i*m_points.y()*m_points.z() + j*m_points.z() + k;
 }
 
+unsigned int Cube::closestIndex(const double pos[3]) const
+{
+  return this->closestIndex(Vector3d(pos));
+}
+
 Vector3i Cube::indexVector(const Vector3d &pos) const
 {
   // Calculate how many steps each coordinate is along its axis
@@ -157,6 +212,14 @@ Vector3i Cube::indexVector(const Vector3d &pos) const
   j = int((pos.y() - m_min.y()) / m_spacing.y());
   k = int((pos.z() - m_min.z()) / m_spacing.z());
   return Vector3i(i, j, k);
+}
+
+void Cube::indexVector(const double pos[3], int ind[3]) const
+{
+  Vector3i eind = this->indexVector(Vector3d(pos));
+  ind[0] = eind.x();
+  ind[1] = eind.y();
+  ind[2] = eind.z();
 }
 
 Vector3d Cube::position(unsigned int index) const
@@ -223,6 +286,11 @@ float Cube::valuef(const Vector3f &pos) const
       value(hC.x(), hC.y(), hC.z()) * P.x()  * P.y()  * P.z();
 }
 
+float Cube::valuef(const float pos[3]) const
+{
+  return this->valuef(Vector3f(pos));
+}
+
 double Cube::value(const Vector3d &pos) const
 {
   // This is a really expensive operation and so should be avoided
@@ -250,6 +318,11 @@ double Cube::value(const Vector3d &pos) const
       value(lC.x(), hC.y(), hC.z()) * dP.x() * P.y()  * P.z()  +
       value(hC.x(), hC.y(), lC.z()) * P.x()  * P.y()  * dP.z() +
       value(hC.x(), hC.y(), hC.z()) * P.x()  * P.y()  * P.z();
+}
+
+double Cube::value(const double pos[3]) const
+{
+  return this->value(Vector3d(pos));
 }
 
 bool Cube::setValue(int i, int j, int k, double value)
