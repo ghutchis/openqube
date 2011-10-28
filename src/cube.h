@@ -27,6 +27,7 @@
 class QReadWriteLock;
 
 namespace OpenQube {
+class Molecule;
 
 class OPENQUBE_EXPORT Cube
 {
@@ -52,9 +53,19 @@ public:
   Eigen::Vector3d min() const { return m_min; }
 
   /**
+   * @param amin The minimum point in the cube.
+   */
+  void min(double amin[3]) const;
+
+  /**
    * @return The maximum point in the cube.
    */
   Eigen::Vector3d max() const { return m_max; }
+
+  /**
+   * @param amin The maximum point in the cube.
+   */
+  void max(double amin[3]) const;
 
   /**
    * @return The spacing of the grid.
@@ -62,9 +73,19 @@ public:
   Eigen::Vector3d spacing() const { return m_spacing; }
 
   /**
+   * @param aspacing The spacing of the grid.
+   */
+  void spacing(double aspacing[3]) const;
+
+  /**
    * @return The x, y and z dimensions of the cube.
    */
   Eigen::Vector3i dimensions() const { return m_points; }
+
+  /**
+   * @param dim The x, y and z dimensions of the cube.
+   */
+  void dimensions(int dim[3]) const;
 
   /**
    * Set the limits of the cube.
@@ -79,9 +100,27 @@ public:
    * Set the limits of the cube.
    * @param min The minimum point in the cube.
    * @param max The maximum point in the cube.
+   * @param points The number of (integer) points in the cube.
+   */
+  bool setLimits(const double min[3], const double max[3],
+                 const int points[3]);
+
+  /**
+   * Set the limits of the cube.
+   * @param min The minimum point in the cube.
+   * @param max The maximum point in the cube.
    * @param spacing The interval between points in the cube.
    */
   bool setLimits(const Eigen::Vector3d &min, const Eigen::Vector3d &max,
+                 double spacing);
+
+  /**
+   * Set the limits of the cube.
+   * @param min The minimum point in the cube.
+   * @param max The maximum point in the cube.
+   * @param spacing The interval between points in the cube.
+   */
+  bool setLimits(const double min[3], const double max[3],
                  double spacing);
 
   /**
@@ -91,6 +130,15 @@ public:
    * @param spacing The interval between points in the cube.
    */
   bool setLimits(const Eigen::Vector3d &min, const Eigen::Vector3i &dim,
+                 double spacing);
+
+  /**
+   * Set the limits of the cube.
+   * @param min The minimum point in the cube.
+   * @param dim The integer dimensions of the cube in x, y and z.
+   * @param spacing The interval between points in the cube.
+   */
+  bool setLimits(const double min[3], const int dim[3],
                  double spacing);
 
   /**
@@ -121,16 +169,34 @@ public:
   unsigned int closestIndex(const Eigen::Vector3d &pos) const;
 
   /**
+   * @return Index of the point closest to the position supplied.
+   * @param pos Position to get closest index for.
+   */
+  unsigned int closestIndex(const double pos[3]) const;
+
+  /**
    * @param pos Position to get closest index for.
    * @return The i, j, k index closest to the position supplied.
    */
   Eigen::Vector3i indexVector(const Eigen::Vector3d &pos) const;
 
   /**
+   * @param pos Position to get closest index for.
+   * @param ind The i, j, k index closest to the position supplied.
+   */
+  void indexVector(const double pos[3], int ind[3]) const;
+
+  /**
    * @param index Index to be translated to a position.
    * @return Position of the given index.
    */
   Eigen::Vector3d position(unsigned int index) const;
+
+  /**
+   * @param index Index to be translated to a position.
+   * @param pos Position of the given index.
+   */
+  void position(unsigned int index, double pos[3]) const;
 
   /**
    * This function is very quick as it just returns the value at the point.
@@ -160,7 +226,25 @@ public:
    * @warning This function is quite computationally expensive and should be
    * avoided where possible.
    */
+  float valuef(const float pos[3]) const;
+
+  /**
+   * This function uses trilinear interpolation to find the value at points
+   * between those specified in the cube.
+   * @return Cube value at the specified position.
+   * @warning This function is quite computationally expensive and should be
+   * avoided where possible.
+   */
   double value(const Eigen::Vector3d &pos) const;
+
+  /**
+   * This function uses trilinear interpolation to find the value at points
+   * between those specified in the cube.
+   * @return Cube value at the specified position.
+   * @warning This function is quite computationally expensive and should be
+   * avoided where possible.
+   */
+  double value(const double pos[3]) const;
 
   /**
    * Sets the value at the specified point in the cube.
